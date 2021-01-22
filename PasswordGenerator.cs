@@ -21,6 +21,12 @@ namespace PasswordGenerator
             this.method = Method.Strong;
         }
 
+        public PasswordGenerator(int length)
+        {
+            this.length = length;
+            this.method = Method.Strong;
+        }
+
         public PasswordGenerator(int length, Method method)
         {
             this.length = length;
@@ -50,9 +56,9 @@ namespace PasswordGenerator
             var simpleChars = GetUniqueKey(SimpleChars, length - lengthForNumbers);
 
             var sum = numberChars.Append(simpleChars);
-            var scrambled = Scramble(sum.ToString());
+            var shuffledResult = Shuffle(sum.ToString());
 
-            return new string(scrambled.ToArray());
+            return new string(shuffledResult.ToArray());
         }
 
         private string GetUniqueKeyStrongWithSymbols()
@@ -65,18 +71,18 @@ namespace PasswordGenerator
 
             var simpleChars = GetUniqueKey(SimpleChars, length - lengthForNumbers - lengthForSpec);
             var sum = numberChars.Append(specChars).Append(simpleChars);
-            var scrambled = Scramble(sum.ToString());
+            var shuffledResult = Shuffle(sum.ToString());
 
-            return new string(scrambled.ToArray());
+            return new string(shuffledResult.ToArray());
         }
 
-        private List<char> Scramble(string s)
+        private List<char> Shuffle(string s)
         {
             var chars = s.ToList().OrderBy(x => Guid.NewGuid()).ToList();
 
             while (!SimpleChars.Contains(chars.First()))
             {
-                chars = Scramble(new string(chars.ToArray()));
+                chars = Shuffle(new string(chars.ToArray()));
             }
 
             return chars;
@@ -86,7 +92,7 @@ namespace PasswordGenerator
         {
             var chars = symbols.ToCharArray();
 
-            var data = new byte[4 * size];
+            var data = new byte[1000 * size];
             using (var crypto = new RNGCryptoServiceProvider())
             {
                 crypto.GetBytes(data);
@@ -95,7 +101,7 @@ namespace PasswordGenerator
             var result = new StringBuilder(size);
             for (var i = 0; i < size; i++)
             {
-                var rnd = BitConverter.ToUInt32(data, i * 4);
+                var rnd = BitConverter.ToUInt32(data, i * 1000);
                 var idx = rnd % chars.Length;
 
                 result.Append(chars[idx]);
