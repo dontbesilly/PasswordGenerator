@@ -39,19 +39,52 @@ namespace PasswordGenerator
             });
             rootCommand.AddCommand(versionCommand);
 
-            // Length command (only 1 argument)
-            var lengthCommand = new Command("length", "Password length");
-            lengthCommand.AddAlias("-l");
-            lengthCommand.AddArgument(new Argument<int>("length"));
-            lengthCommand.Handler = CommandHandler.Create<int>(length =>
+            // Options
+            var optionsCommand = new Command("options", "Custom options")
             {
-                var pg = new PasswordGenerator(length);
-                Console.WriteLine(pg.Generate());
-            });
-            rootCommand.AddCommand(lengthCommand);
+                new Option<int>(
+                    "--l",
+                    getDefaultValue: () => 8,
+                    description: "Length of password"),
+                new Option<int>(
+                    "--t",
+                    getDefaultValue: () => 2,
+                    description: $"1: only letters; 2: with numbers; 3: with {PasswordGenerator.SymbolChars}"),
+            };
+            optionsCommand.AddAlias("-o");
+            optionsCommand.Handler = CommandHandler.Create<int, int>(OptionsCommandFunc);
+            rootCommand.AddCommand(optionsCommand);
 
             // Run
             await rootCommand.InvokeAsync(args);
+        }
+
+        private static void OptionsCommandFunc(int l, int t)
+        {
+            var method = t.ToEnum<Method>();
+
+            if (!method.HasValue)
+            {
+                method = Method.Strong;
+                Console.WriteLine($"Cannot find value {t}");
+            }
+
+            var pg = new PasswordGenerator(l, method.Value);
+            Console.WriteLine(pg.Generate());
+        }
+
+        private static T? ToEnum<T>(this int value) where T : struct
+        {
+            var name = Enum.GetName(typeof(T), value);
+            return name.ToEnum<T>();
+        }
+
+        private static T? ToEnum<T>(this string value) where T : struct
+        {
+            if (Enum.TryParse(value, true, out T result))
+                return result;
+
+            return null;
         }
     }
 }

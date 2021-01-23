@@ -10,7 +10,7 @@ namespace PasswordGenerator
     {
         private const string SimpleChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
         private const string NumberChars = "0123456789";
-        private const string SymbolChars = "!@#$%^&*()";
+        public const string SymbolChars = "!@#$%^&*()";
 
         private readonly int length;
         private readonly Method method;
@@ -113,7 +113,7 @@ namespace PasswordGenerator
 
     public enum Method
     {
-        Simple,
+        Simple = 1,
         Strong,
         Special
     }
