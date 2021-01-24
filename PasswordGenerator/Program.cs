@@ -44,11 +44,11 @@ namespace PasswordGenerator
             {
                 new Option<int>(
                     "--l",
-                    getDefaultValue: () => 8,
+                    getDefaultValue: () => PasswordGenerator.DefaultLength,
                     description: "Length of password"),
                 new Option<int>(
                     "--t",
-                    getDefaultValue: () => 2,
+                    getDefaultValue: () => (int) PasswordGenerator.DefaultMethod,
                     description: $"1: only letters; 2: with numbers; 3: with {PasswordGenerator.SymbolChars}"),
             };
             optionsCommand.AddAlias("-o");

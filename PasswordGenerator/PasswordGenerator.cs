@@ -11,20 +11,22 @@ namespace PasswordGenerator
         private const string SimpleChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
         private const string NumberChars = "0123456789";
         public const string SymbolChars = "!@#$%^&*()";
+        public const int DefaultLength = 8;
+        public const Method DefaultMethod = Method.Strong;
 
         private readonly int length;
         private readonly Method method;
 
         public PasswordGenerator()
         {
-            this.length = 8;
-            this.method = Method.Strong;
+            this.length = DefaultLength;
+            this.method = DefaultMethod;
         }
 
         public PasswordGenerator(int length)
         {
             this.length = length;
-            this.method = Method.Strong;
+            this.method = DefaultMethod;
         }
 
         public PasswordGenerator(int length, Method method)
