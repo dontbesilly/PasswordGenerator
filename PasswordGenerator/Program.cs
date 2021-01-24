@@ -43,11 +43,11 @@ namespace PasswordGenerator
             var optionsCommand = new Command("options", "Custom options")
             {
                 new Option<int>(
-                    "--l",
+                    "--len",
                     getDefaultValue: () => PasswordGenerator.DefaultLength,
                     description: "Length of password"),
                 new Option<int>(
-                    "--t",
+                    "--type",
                     getDefaultValue: () => (int) PasswordGenerator.DefaultMethod,
                     description: $"1: only letters; 2: with numbers; 3: with {PasswordGenerator.SymbolChars}"),
             };
@@ -59,17 +59,17 @@ namespace PasswordGenerator
             await rootCommand.InvokeAsync(args);
         }
 
-        private static void OptionsCommandFunc(int l, int t)
+        private static void OptionsCommandFunc(int len, int type)
         {
-            var method = t.ToEnum<Method>();
+            var method = type.ToEnum<Method>();
 
             if (!method.HasValue)
             {
                 method = Method.Strong;
-                Console.WriteLine($"Cannot find value {t}");
+                Console.WriteLine($"Cannot find value {type}");
             }
 
-            var pg = new PasswordGenerator(l, method.Value);
+            var pg = new PasswordGenerator(len, method.Value);
             Console.WriteLine(pg.Generate());
         }
 
